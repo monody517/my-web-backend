@@ -2,6 +2,8 @@ const express = require('express')
 
 const router = express.Router()
 
-router.post('/uploadpic',)
+const uploadpic_handle = require('./uploadPicHandle')
+
+router.post('/uploadpic',uploadpic_handle.uploadPic)
 
 module.exports = router
