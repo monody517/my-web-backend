@@ -1,0 +1,8 @@
+{
+  "name": "my-web-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:monody517/my-web-backend.git",
+  "author": "wenpei",
+  "license": "MIT"
+}
