@@ -5,7 +5,7 @@ const cors = require('koa2-cors')
 const app = new Koa();
 
 const port = '8082'
-const host = '0.0.0.0'
+const host = '192.168.10.77'
 
 //设置跨域
 app.use(cors({
