@@ -1,14 +1,31 @@
-const express = require('express')
-const app = express()
-const cors = require('cors')
+const Koa = require('koa');
+const router = require('./src/router');
+const cors = require('koa2-cors')
+ 
+const app = new Koa();
 
-const picRouter = require('./src/picture/uploadPic')
+const port = '8082'
+const host = '0.0.0.0'
 
-app.use('/api',picRouter)
+//设置跨域
+app.use(cors({
+    origin: function (ctx){
+        console.log('1111', ctx.url)
+        if (ctx.url.indexOf('/api/') > -1) {
+            return '*'
+        }
+    },
+    exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+    maxAge: 5,
+    credentials: true,
+    allowHeaders: ['GET', 'POST', 'DELETE'],
+    allowMethods: ['Content-Type', 'Authorization', 'Accept', 'x-requested-with']
+}))
 
-const server = app.listen(4000, '127.0.0.1', function () {
-    const host = server.address().address;
-    const port = server.address().port;
-
-    console.log('Server running at http://%s:%s', host, port);
-})
+app
+  .use(router.routes())
+    .use(router.allowedMethods());
+  
+app.listen(port, host, () => {
+        console.log(`API server listening on ${host}:${port}`);
+    });
