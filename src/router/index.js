@@ -8,7 +8,12 @@ const routes = [
         method: 'get',
         path: '/api/list',
         handler: uploadHandler.getList
-    }
+  },
+  {
+    method: 'post',
+    path: '/api/delect',
+    handler: uploadHandler.delectImg
+  }
 ]
 
 router.post('/api/upload',uploadHandler.uploadSingleCatchError,uploadHandler.upload)

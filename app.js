@@ -3,11 +3,9 @@ const router = require('./src/router');
 const cors = require('koa2-cors')
 const staticFiles = require('koa-static')
 const path = require('path')
+const {host,port} = require('./src/config')
  
 const app = new Koa();
-
-const port = '8082'
-const host = '192.168.10.77'
 
 //设置跨域
 app.use(cors({

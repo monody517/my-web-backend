@@ -1,13 +1,11 @@
 const glob = require('glob') // 读取文件
 const multer = require('@koa/multer')
 const path = require('path')
-
-let staticPath = __dirname
-
+const fs = require('fs')
+const {host,port} = require('../config')
 
 // 为了捕获multer的错误
 const uploadSingleCatchError = async (ctx, next) => {
-    console.log(ctx)
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
             cb(null,path.resolve(__dirname, "../../public"))
@@ -57,7 +55,7 @@ const getList = async ctx => {
 
     const files = glob.sync(path.resolve(__dirname, "../../public/*"))
     const result = files.map(item => {
-            return item
+            return `http://192.168.10.77:8082/${item.split('/')[6]}`
         })
         
         ctx.body = {
@@ -66,8 +64,40 @@ const getList = async ctx => {
         }
 }
 
+const delectImg = async ctx => {
+    if (ctx.request.url.split(`http://${host}:${port}`)[1].indexOf('shan_chu') !== -1) {
+        ctx.body = {
+            state: 500,
+            message: '删除失败，此为系统默认图片'
+        }
+        return
+    } else if (ctx.request.url.split(`http://${host}:${port}`)[1].indexOf('camera') !== -1) {
+        ctx.body = {
+            state: 500,
+            message: '删除失败，此为系统默认图片'
+        }
+        return
+    }
+    const delPath = path.join(__dirname, "../../public", ctx.request.url.split(`http://${host}:${port}`)[1])
+    if (fs.existsSync(delPath)) {
+        fs.unlinkSync(delPath)
+    } else {
+        ctx.body = {
+            state: 500,
+            message: '删除失败，图片不存在'
+        }
+        return
+    }
+     
+    ctx.body = {
+        state: 200,
+        message: '删除成功'
+    }
+}
+
 module.exports = {
     uploadSingleCatchError,
     upload,
-    getList
+    getList,
+    delectImg
   }
