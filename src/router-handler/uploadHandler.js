@@ -1,16 +1,19 @@
 const glob = require('glob') // 读取文件
 const multer = require('@koa/multer')
+const path = require('path')
 
 let staticPath = __dirname
 
 
 // 为了捕获multer的错误
 const uploadSingleCatchError = async (ctx, next) => {
+    console.log(ctx)
     const storage = multer.diskStorage({
         destination: function (req, file, cb) {
-            cb(null,`${staticPath}/uploads`)
+            cb(null,path.resolve(__dirname, "../../public"))
         },
         filename: function (req, file, cb) {
+            console.log('file',file)
             let [name, type] = file.originalname.split('.');
             cb(null,`${name}_${Date.now().toString(16)}.${type}`)
         }
@@ -36,24 +39,23 @@ const uploadSingleCatchError = async (ctx, next) => {
 }
 
 const upload = async ctx => {
-    let { filename, path, size } = ctx.file;
-    let { source } = ctx.request.body || 'unknow';
-    let url = path
+    let { name, path, size } = ctx.file;
 
+    let { source } = ctx.request.body || 'unknow';
 
     ctx.body = {
         state: 200,
-        filename,
-        url,
-        source,
-        size
+        name,
+        path,
+        size,
+        url: `http://192.168.10.77:8082/${ctx.request.file.filename}`
     }
 
 }
 
 const getList = async ctx => {
 
-    const files = glob.sync(`${staticPath}/uploads/*`)
+    const files = glob.sync(path.resolve(__dirname, "../../public/*"))
     const result = files.map(item => {
             return item
         })
