@@ -48,7 +48,6 @@ const upload = async ctx => {
         size,
         url: `http://192.168.10.77:8082/${ctx.request.file.filename}`
     }
-
 }
 
 const getList = async ctx => {
@@ -74,11 +73,12 @@ const delectImg = async ctx => {
     } else if (ctx.request.url.split(`http://${host}:${port}`)[1].indexOf('camera') !== -1) {
         ctx.body = {
             state: 500,
-            message: '删除失败，此为系统默认图片'
+            message: '删除失败，此为系统默认图片'   
         }
         return
     }
     const delPath = path.join(__dirname, "../../public", ctx.request.url.split(`http://${host}:${port}`)[1])
+    console.log(delPath)
     if (fs.existsSync(delPath)) {
         fs.unlinkSync(delPath)
     } else {

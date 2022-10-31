@@ -3,7 +3,9 @@ const router = require('./src/router');
 const cors = require('koa2-cors')
 const staticFiles = require('koa-static')
 const path = require('path')
-const {host,port} = require('./src/config')
+const { host, port } = require('./src/config')
+const compose = require('koa-compose');
+const MD = require('./src/middlewares/index')
  
 const app = new Koa();
 
@@ -22,6 +24,7 @@ app.use(cors({
 }))
 
 app.use(router.routes())
+// app.use(compose(MD))
 app.use(router.allowedMethods());
 app.use(staticFiles(path.resolve(__dirname, "./public")))
   
