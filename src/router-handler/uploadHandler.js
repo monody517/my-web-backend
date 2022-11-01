@@ -2,7 +2,7 @@ const glob = require('glob') // 读取文件
 const multer = require('@koa/multer')
 const path = require('path')
 const fs = require('fs')
-const {host,port} = require('../config')
+const {host,port} = require('../config/config')
 
 // 为了捕获multer的错误
 const uploadSingleCatchError = async (ctx, next) => {
