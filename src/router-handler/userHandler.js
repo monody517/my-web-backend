@@ -1,37 +1,79 @@
 const allSqlAction = require('../db/mysql')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const {jwtSecretKey} = require('../config/config')
 
 const registerUser = async ctx => {
     let { phone, password } = ctx.request.body
-    let sql1 = `insert into elm_user (elm_userPhone,elm_userPassword) values ('${phone}','${password}')`
+
+    // 表单数据验证合法性
+    if(!phone || !password){
+        return res.cc('手机号或密码不能为空')
+    }
+
     let sql2 = `select * from elm_user where elm_userPhone=${phone}`
-    let result = await allSqlAction.allSqlAction(sql2).then((res) => {
+    let result = await allSqlAction.allSqlAction(sql2).then(async (res) => {
         if (res.length > 0) {
             return {
                 status: 500,
-                massage: '用户名被占用，请更换其他用户名',
+                massage: '手机号被占用，请更换其他用户名',
             }
-        } else {
-            allSqlAction.allSqlAction(sql1).then(res => {
-                if (res.affectedRows === 1) {
-                    return {
-                        status: 200,
-                        massage: '注册成功',
-                    }
-                } else {
-                    return {
-                        status: 500,
-                        massage: '注册失败',
-                    }
-                }
-            })
         }
+        password = bcrypt.hashSync(password, 10)
+        let sql1 = `insert into elm_user (elm_userPhone,elm_userPassword) values ('${phone}','${password}')`
+         return await allSqlAction.allSqlAction(sql1).then(res => {
+            if (res.affectedRows === 1) {
+                return {
+                    status: 200,
+                    massage: '注册成功',
+                }
+            } else {
+                return {
+                    status: 500,
+                    massage: '注册失败',
+                }
+            }
+         })
     })
 
-    console.log('result',result);
+    return ctx.body = result
+}
+
+const login = async ctx => {
+    let { phone, password } = ctx.request.body
+    const sql = 'select * from elm_user where elm_userPhone=?'
+
+    const result = await allSqlAction.allSqlAction(sql, phone).then(res => {
+        if (res.length !== 1) {
+            return {
+                status: 500,
+                massage: '用户不存在',
+            }
+        }
+        const compareResult = bcrypt.compareSync(password,res[0].elm_userPassword)
+        if(!compareResult){
+            return {
+                status: 500,
+                massage: '密码错误',
+            }
+        }
+
+        const user = {...res[0],password:'',user_pic: ''}
+        const tokenStr = jwt.sign(user,jwtSecretKey,{
+            expiresIn: '10h'
+        })
+
+        return {
+            status: 200,
+            massage: '登录成功',
+            token: 'Bearer ' + tokenStr
+        }
+    })
 
     return ctx.body = result
 }
 
 module.exports = {
-    registerUser
+    registerUser,
+    login
 }

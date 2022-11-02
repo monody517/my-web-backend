@@ -2,7 +2,7 @@ const glob = require('glob') // 读取文件
 const multer = require('@koa/multer')
 const path = require('path')
 const fs = require('fs')
-const {host,port} = require('../config/config')
+const {address} = require('../config/config')
 
 // 为了捕获multer的错误
 const uploadSingleCatchError = async (ctx, next) => {
@@ -64,20 +64,20 @@ const getList = async ctx => {
 }
 
 const delectImg = async ctx => {
-    if (ctx.request.url.split(`http://${host}:${port}`)[1].indexOf('shan_chu') !== -1) {
+    if (ctx.request.url.split(`http://${address.host}:${address.port}`)[1].indexOf('shan_chu') !== -1) {
         ctx.body = {
             state: 500,
             message: '删除失败，此为系统默认图片'
         }
         return
-    } else if (ctx.request.url.split(`http://${host}:${port}`)[1].indexOf('camera') !== -1) {
+    } else if (ctx.request.url.split(`http://${address.host}:${address.port}`)[1].indexOf('camera') !== -1) {
         ctx.body = {
             state: 500,
             message: '删除失败，此为系统默认图片'   
         }
         return
     }
-    const delPath = path.join(__dirname, "../../public", ctx.request.url.split(`http://${host}:${port}`)[1])
+    const delPath = path.join(__dirname, "../../public", ctx.request.url.split(`http://${address.host}:${address.port}`)[1])
     console.log(delPath)
     if (fs.existsSync(delPath)) {
         fs.unlinkSync(delPath)

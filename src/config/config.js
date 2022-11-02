@@ -3,4 +3,6 @@ const address = {
     host: '192.168.10.77'
 }
 
-module.exports = address
+const jwtSecretKey = 'omg 666 ^_^'
+
+module.exports = {address,jwtSecretKey}
