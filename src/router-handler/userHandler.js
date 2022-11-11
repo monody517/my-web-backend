@@ -5,11 +5,7 @@ const {jwtSecretKey} = require('../config/config')
 
 const registerUser = async ctx => {
     let { phone, password } = ctx.request.body
-
-    // 表单数据验证合法性
-    if(!phone || !password){
-        return res.cc('手机号或密码不能为空')
-    }
+    console.log(ctx.request.body);
 
     let sql2 = `select * from elm_user where elm_userPhone=${phone}`
     let result = await allSqlAction.allSqlAction(sql2).then(async (res) => {
@@ -44,6 +40,42 @@ const login = async ctx => {
     const sql = 'select * from elm_user where elm_userPhone=?'
 
     const result = await allSqlAction.allSqlAction(sql, phone).then(res => {
+        console.log(res);
+        if (res.length !== 1) {
+            return {
+                status: 500,
+                massage: '用户不存在',
+            }
+        }
+        const compareResult = bcrypt.compareSync(password,res[0].elm_userPassword)
+        if(!compareResult){
+            return {
+                status: 500,
+                massage: '密码错误',
+            }
+        }
+
+        const user = {...res[0],password:'',user_pic: ''}
+        const tokenStr = jwt.sign(user,jwtSecretKey,{
+            expiresIn: '10h'
+        })
+
+        return {
+            status: 200,
+            massage: '登录成功',
+            token: 'Bearer ' + tokenStr
+        }
+    })
+
+    return ctx.body = result
+}
+
+const uploadAvatar = async ctx => {
+    let { phone,imgUrl } = ctx.request.body
+    const sql = 'select * from elm_user where elm_userPhone=?'
+
+    const result = await allSqlAction.allSqlAction(sql, phone).then(res => {
+        console.log(res);
         if (res.length !== 1) {
             return {
                 status: 500,

@@ -10,21 +10,18 @@ const MD = require('./src/middlewares/index')
  
 const app = new Koa();
 
+app.use(router.allowedMethods());
 //设置跨域
 app.use(cors({
     origin: function (ctx){
-        if (ctx.url.indexOf('/api/') > -1) {
-            return '*'
-        }
+        return '*'
     },
     exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
     maxAge: 5,
     credentials: true,
-    allowHeaders: ['GET', 'POST', 'DELETE'],
-    allowMethods: ['Content-Type', 'Authorization', 'Accept', 'x-requested-with']
+    allowHeaders: ['Content-Type', 'Authorization', 'Accept', 'x-requested-with'],
+    allowMethods: ['GET', 'POST', 'DELETE']
 }))
-
-app.use(router.allowedMethods());
 app.use(koaBody())  // 解析post请求体data
 app.use(router.routes()) // 路由转发
 app.use(staticFiles(path.resolve(__dirname, "./public")))  // 使用public
