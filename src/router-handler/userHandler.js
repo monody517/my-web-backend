@@ -71,34 +71,20 @@ const login = async ctx => {
 }
 
 const uploadAvatar = async ctx => {
-    let { phone,imgUrl } = ctx.request.body
-    const sql = 'select * from elm_user where elm_userPhone=?'
+    let { phone, imgUrl } = ctx.request.body
+    const sql = `UPDATE elm_user SET elm_imgUrl='${imgUrl}' WHERE elm_userPhone='${phone}'`
 
-    const result = await allSqlAction.allSqlAction(sql, phone).then(res => {
-        console.log(res);
-        if (res.length !== 1) {
+    const result = await allSqlAction.allSqlAction(sql).then(res => {
+        if (res.affectedRows === 1) {
+            return {
+                status: 200,
+                massage: '更新成功',
+            }
+        } else {
             return {
                 status: 500,
-                massage: '用户不存在',
+                massage: '更新失败',
             }
-        }
-        const compareResult = bcrypt.compareSync(password,res[0].elm_userPassword)
-        if(!compareResult){
-            return {
-                status: 500,
-                massage: '密码错误',
-            }
-        }
-
-        const user = {...res[0],password:'',user_pic: ''}
-        const tokenStr = jwt.sign(user,jwtSecretKey,{
-            expiresIn: '10h'
-        })
-
-        return {
-            status: 200,
-            massage: '登录成功',
-            token: 'Bearer ' + tokenStr
         }
     })
 
@@ -107,5 +93,6 @@ const uploadAvatar = async ctx => {
 
 module.exports = {
     registerUser,
-    login
+    login,
+    uploadAvatar
 }

@@ -4,5 +4,6 @@ const router = new Router()
 
 router.post('/api/login/register', userHandler.registerUser)
 router.post('/api/login/login', userHandler.login)
+router.post('/api/upload/avatar', userHandler.uploadAvatar)
 
 module.exports = router

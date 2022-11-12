@@ -5,7 +5,6 @@ const staticFiles = require('koa-static')
 const koaBody = require('koa-bodyparser')
 const path = require('path')
 const { address } = require('./src/config/config')
-const compose = require('koa-compose');
 const MD = require('./src/middlewares/index')
  
 const app = new Koa();
