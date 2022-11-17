@@ -30,19 +30,20 @@ const uploadSingleCatchError = async (ctx, next) => {
     if(err) {
         ctx.status = 500
         ctx.body = {
-            state: 500,
+            status: 500,
             msg: err.message
         }
     }
 }
 
 const upload = async ctx => {
+    console.log(ctx.fileName);
     let { name, path, size } = ctx.file;
 
     let { source } = ctx.request.body || 'unknow';
 
     ctx.body = {
-        state: 200,
+        status: 200,
         name,
         path,
         size,
@@ -56,24 +57,24 @@ const getList = async ctx => {
     const result = files.map(item => {
             return `http://192.168.10.77:8082/${item.split('/')[6]}`
         })
-        
+
         ctx.body = {
-            state: 200,
-            result
+            status: 200,
+            data: result
         }
 }
 
 const delectImg = async ctx => {
     if (ctx.request.url.split(`http://${address.host}:${address.port}`)[1].indexOf('shan_chu') !== -1) {
         ctx.body = {
-            state: 500,
+            status: 500,
             message: '删除失败，此为系统默认图片'
         }
         return
     } else if (ctx.request.url.split(`http://${address.host}:${address.port}`)[1].indexOf('camera') !== -1) {
         ctx.body = {
-            state: 500,
-            message: '删除失败，此为系统默认图片'   
+            status: 500,
+            message: '删除失败，此为系统默认图片'
         }
         return
     }
@@ -83,14 +84,14 @@ const delectImg = async ctx => {
         fs.unlinkSync(delPath)
     } else {
         ctx.body = {
-            state: 500,
+            status: 500,
             message: '删除失败，图片不存在'
         }
         return
     }
-     
+
     ctx.body = {
-        state: 200,
+        status: 200,
         message: '删除成功'
     }
 }

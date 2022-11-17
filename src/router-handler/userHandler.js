@@ -55,7 +55,7 @@ const login = async ctx => {
             }
         }
 
-        const user = {...res[0],password:'',user_pic: ''}
+        const user = {...res[0],password:'',user_imgUrl: ''}
         const tokenStr = jwt.sign(user,jwtSecretKey,{
             expiresIn: '10h'
         })
@@ -63,7 +63,13 @@ const login = async ctx => {
         return {
             status: 200,
             massage: '登录成功',
-            token: 'Bearer ' + tokenStr
+            // token: 'Bearer ' + tokenStr,
+            // user: user
+            data: {
+                userPhone: res[0].elm_userPhone,
+                userAvr: res[0].elm_imgUrl,
+                token: 'Bearer ' + tokenStr,
+            }
         }
     })
 
