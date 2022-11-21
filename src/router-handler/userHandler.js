@@ -2,6 +2,8 @@ const allSqlAction = require('../db/mysql')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const {jwtSecretKey} = require('../config/config')
+const path = require('path')
+const glob = require('glob') // 读取文件
 
 const registerUser = async ctx => {
     let { phone, password } = ctx.request.body
@@ -67,7 +69,7 @@ const login = async ctx => {
             // user: user
             data: {
                 userPhone: res[0].elm_userPhone,
-                userAvr: res[0].elm_imgUrl,
+                userAvar: res[0].elm_imgUrl,
                 token: 'Bearer ' + tokenStr,
             }
         }
@@ -78,12 +80,25 @@ const login = async ctx => {
 
 const uploadAvatar = async ctx => {
     let { phone, imgUrl } = ctx.request.body
-    const sql = `UPDATE elm_user SET elm_imgUrl='${imgUrl}' WHERE elm_userPhone='${phone}'`
+
+    const files = glob.sync(path.resolve(__dirname, "../../public/*"))
+    const imgList = files.map(item => {
+        return `${item.split('/')[6]}`
+    })
+   const exitImgList = imgList.filter(item=>{
+        if(item.indexOf(imgUrl.split('.')[0])>-1){
+            return item
+        }
+    })
+    const avarUrl = `http://192.168.10.77:8082/${exitImgList[0]}`
+
+    const sql = `UPDATE elm_user SET elm_imgUrl='${avarUrl}' WHERE elm_userPhone='${phone}'`
 
     const result = await allSqlAction.allSqlAction(sql).then(res => {
         if (res.affectedRows === 1) {
             return {
                 status: 200,
+                data: avarUrl,
                 massage: '更新成功',
             }
         } else {

@@ -37,15 +37,13 @@ const uploadSingleCatchError = async (ctx, next) => {
 }
 
 const upload = async ctx => {
-    console.log(ctx.fileName);
-    let { name, path, size } = ctx.file;
+    let { name, paths, size } = ctx.file;
 
-    let { source } = ctx.request.body || 'unknow';
-
-    ctx.body = {
+    ctx.body =
+        {
         status: 200,
         name,
-        path,
+        paths,
         size,
         url: `http://192.168.10.77:8082/${ctx.request.file.filename}`
     }
