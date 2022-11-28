@@ -112,8 +112,38 @@ const uploadAvatar = async ctx => {
     return ctx.body = result
 }
 
+const getUserAvar = async ctx => {
+    console.log(ctx.request);
+    const sql = 'select * from elm_user where elm_userPhone=?'
+
+    const phone = ctx.request.url.split('?')[1].split('=')[1]
+
+    console.log(phone);
+
+    const result = await allSqlAction.allSqlAction(sql, phone).then(res => {
+        if (res.length !== 1) {
+            return {
+                status: 500,
+                massage: '用户不存在',
+            }
+        }else {
+            return {
+                status: 200,
+                // token: 'Bearer ' + tokenStr,
+                // user: user
+                data: {
+                    userPhone: res[0].elm_userPhone,
+                    userAvar: res[0].elm_imgUrl,
+                }
+            }
+        }
+    })
+    return ctx.body = result
+}
+
 module.exports = {
     registerUser,
     login,
-    uploadAvatar
+    uploadAvatar,
+    getUserAvar
 }
