@@ -2,7 +2,7 @@ const koaRouter = require('koa-router');
 const router = new koaRouter();
 const user = require('./userRoute')
 
-const uploadHandler = require('../router-handler/uploadHandler')
+const uploadHandler = require('../router-handler/imgHandler')
 
 const routes = [
     {
