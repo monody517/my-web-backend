@@ -1,5 +1,5 @@
 const Koa = require('koa');
-const router = require('./src/router/imgRoute');
+const router = require('./src/router');
 const cors = require('koa2-cors')
 const staticFiles = require('koa-static')
 const koaBody = require('koa-bodyparser')

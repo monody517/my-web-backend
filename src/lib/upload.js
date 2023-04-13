@@ -1,7 +1,7 @@
-import fs from "fs";
+const fs = require('fs')
 
 // 读取文件, 如果路径不存在则创建对应的路径
-export function RF(path) {
+function RF(path) {
     if (fs.existsSync(path)) {
         const data = fs.readFileSync(path)
         return data.toString() ? JSON.parse(data) : null
@@ -13,4 +13,8 @@ export function RF(path) {
     fs.mkdirSync(pathArr.join('/'), { recursive: true })
     fs.writeFileSync(path, '')
     return null
+}
+
+module.exports = {
+    RF
 }
