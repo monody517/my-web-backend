@@ -1,12 +1,17 @@
-import { resolve } from 'path';
+const path = require('path')
 
 const address = {
     port: '8082',
-    host: '192.168.10.77'
+    host: '10.125.12.156'
 }
 
 const jwtSecretKey = 'omg 666 ^_^'
 
-const publicPath =resolve(__dirname,'../../public')
+const publicPath =path.resolve(__dirname,'../../public')
 
-module.exports = {address,jwtSecretKey,publicPath}
+module.exports = {
+    address,
+    jwtSecretKey,
+    publicPath,
+    API_VERSION_PATH: '/api',
+}

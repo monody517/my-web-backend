@@ -45,7 +45,7 @@ const upload = async ctx => {
         name,
         paths,
         size,
-        url: `http://192.168.10.77:8082/${ctx.request.file.filename}`
+        url: `${address.host}/${ctx.request.file.filename}`
     }
 }
 
@@ -53,7 +53,7 @@ const getList = async ctx => {
 
     const files = glob.sync(path.resolve(__dirname, "../../public/*"))
     const result = files.map(item => {
-            return `http://192.168.10.77:8082/${item.split('/')[6]}`
+            return `${address.host}/${item.split('/')[6]}`
         })
 
         ctx.body = {
