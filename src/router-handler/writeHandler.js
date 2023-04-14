@@ -10,7 +10,6 @@ const config = require("../config/config");
 const getList = async ctx => {
     const filePath = `${config.publicPath}/db/list.json`
     const data = RF(filePath)
-    console.log('data',data);
     ctx.status = 200
     ctx.body = {
         status: 200,
@@ -18,18 +17,26 @@ const getList = async ctx => {
     }
 }
 
-// const getArticle = async ctx => {
-//     let { name, paths, size } = ctx.file;
-//
-//     ctx.body =
-//         {
-//             status: 200,
-//             name,
-//             paths,
-//             size,
-//             url: `http://192.168.10.77:8082/${ctx.request.file.filename}`
-//         }
-// }
+const getArticle = async ctx => {
+    const { id } = ctx.query
+
+    if(id) {
+        const filePath = `${config.publicPath}/db/articles/${id}.json`
+        const data = RF(filePath)
+        ctx.status = 200
+        ctx.body = {
+            status: 200,
+            data
+        }
+    }else {
+        ctx.status = 400
+        ctx.body = {
+            status: 400,
+            data: null,
+            message: '参数不能为空'
+        }
+    }
+}
 
 const saveArticle = async ctx => {
     const { hash, title, content, type, tid } = ctx.request.body
@@ -105,7 +112,7 @@ const saveArticle = async ctx => {
 
 module.exports = {
     getList,
-    // getArticle,
+    getArticle,
     saveArticle,
     // delArticle
 }
