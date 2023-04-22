@@ -2,7 +2,7 @@ const path = require('path')
 
 const address = {
     port: '8082',
-    host: '10.125.12.156'
+    host: '10.125.134.191'
 }
 
 const jwtSecretKey = 'omg 666 ^_^'

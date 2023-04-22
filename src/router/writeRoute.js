@@ -7,6 +7,6 @@ const router = new Router()
 router.get('/api/article/list', writeRoute.getList)
 router.get('/api/article/get', writeRoute.getArticle)
 router.post('/api/article/save', writeRoute.saveArticle)
-// router.delete('/api/article/del', writeRoute.delArticle)
+router.delete('/api/article/del', writeRoute.delArticle)
 
 module.exports = router

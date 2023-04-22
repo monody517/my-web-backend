@@ -2,7 +2,7 @@ const glob = require("glob");
 const path = require("path");
 const {address} = require("../config/config");
 const fs = require("fs");
-const {RF, WF} = require("../lib/upload");
+const {RF, WF,delFile} = require("../lib/upload");
 const {uuid} = require("../lib/tool");
 const config = require("../config/config");
 
@@ -78,41 +78,45 @@ const saveArticle = async ctx => {
 
 }
 
-// const delArticle = async ctx => {
-//     if (ctx.request.url.split(`http://${address.host}:${address.port}`)[1].indexOf('shan_chu') !== -1) {
-//         ctx.body = {
-//             status: 500,
-//             message: '删除失败，此为系统默认图片'
-//         }
-//         return
-//     } else if (ctx.request.url.split(`http://${address.host}:${address.port}`)[1].indexOf('camera') !== -1) {
-//         ctx.body = {
-//             status: 500,
-//             message: '删除失败，此为系统默认图片'
-//         }
-//         return
-//     }
-//     const delPath = path.join(__dirname, "../../public", ctx.request.url.split(`http://${address.host}:${address.port}`)[1])
-//     console.log(delPath)
-//     if (fs.existsSync(delPath)) {
-//         fs.unlinkSync(delPath)
-//     } else {
-//         ctx.body = {
-//             status: 500,
-//             message: '删除失败，图片不存在'
-//         }
-//         return
-//     }
-//
-//     ctx.body = {
-//         status: 200,
-//         message: '删除成功'
-//     }
-// }
+const delArticle = async ctx => {
+    const { id } = ctx.query
+    if(id) {
+        const filePath = `${config.publicPath}/db/articles/${id}.json`
+        const listPath = `${config.publicPath}/db/list.json`
+        try {
+            await delFile(filePath)
+            // 删除h5列表中的h5
+            let list = RF(listPath)
+            list = list.filter(item => item.id !== id)
+            WF(listPath, list)
+
+            ctx.status = 200
+            ctx.set('x-show-msg', 'zxzk_msg_200')
+            ctx.body = {
+                status: 200,
+                data: null,
+                message: '删除成功'
+            }
+        }catch(err) {
+            console.log(err)
+            ctx.body = {
+                status: 500,
+                data: null,
+                message: '服务器读写错误或文件不存在'
+            }
+        }
+    }else {
+        ctx.body = {
+            status: 400,
+            data: null,
+            message: '参数不能为空'
+        }
+    }
+}
 
 module.exports = {
     getList,
     getArticle,
     saveArticle,
-    // delArticle
+    delArticle
 }

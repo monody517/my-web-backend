@@ -13,7 +13,7 @@ const app = new Koa();
 app.use(cors({
     origin: function (ctx) {
         const whiteList = [
-            'http://10.125.12.156:8085',
+            'http://10.125.134.191:8085',
         ]; //可跨域白名单
         if (whiteList.includes(ctx.request.header.origin) && ctx.url.indexOf(API_VERSION_PATH) > -1) {
             return ctx.request.header.origin //注意，这里域名末尾不能带/，否则不成功，所以在之前我把/通过substr干掉了，允许来自指定域名请求, 如果设置为*，前端将获取不到错误的响应头

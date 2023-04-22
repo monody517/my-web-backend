@@ -54,6 +54,19 @@ function WF(path, data, mode) {
     }
 }
 
+// 删除文件
+function delFile(path) {
+    return new Promise((resolve, reject) => {
+        fs.unlink(path, (err) => {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(null)
+            }
+        })
+    })
+}
+
 module.exports = {
-    RF,WF
+    RF,WF,delFile
 }
