@@ -1,7 +1,4 @@
-const glob = require("glob");
-const path = require("path");
-const {address} = require("../config/config");
-const fs = require("fs");
+//  博客文章接口
 const {RF, WF,delFile} = require("../lib/upload");
 const {uuid} = require("../lib/tool");
 const config = require("../config/config");

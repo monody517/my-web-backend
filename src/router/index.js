@@ -2,6 +2,7 @@ const koaRouter = require('koa-router');
 const router = new koaRouter();
 const user = require('./userRoute')
 const write = require('./writeRoute')
+const uploadFile = require('./uploadFileRoute')
 
 const uploadHandler = require('../router-handler/imgHandler')
 
@@ -28,5 +29,6 @@ routes.forEach(item => {
 
 router.use(user.routes())
 router.use(write.routes())
+router.use(uploadFile.routes())
 
 module.exports = router;
