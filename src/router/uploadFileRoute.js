@@ -34,5 +34,6 @@ router.post(
     }),
     uploadFileRoute.uploadFile)
 router.post('/api/files/merge', uploadFileRoute.mergeChunk)
+router.post('/api/files/verify', uploadFileRoute.verifyFile)
 
 module.exports = router

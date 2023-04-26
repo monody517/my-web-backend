@@ -4,6 +4,26 @@ const config = require("../config/config");
 
 const outputPath = `${config.publicPath}/bigFile`
 
+// 验证文件是否存在，存在直接返回，不存在则新上传
+const verifyFile = async ctx => {
+    const {filename} = ctx.request.body
+    let shouldUpload = true // 需要重新上传
+    let message = '文件不存在，需要重新上传'
+    const fileDir = path.join(outputPath,filename)
+    console.log('fileDir',fileDir);
+    console.log('fs.existsSync(fileDir)',fs.existsSync(fileDir));
+    if(fs.existsSync(fileDir)){
+        shouldUpload = false
+        message = '文件已存在，不需要重新上传'
+    }
+    ctx.body = JSON.stringify({
+        status: 200,
+        data: shouldUpload,
+        message
+    })
+}
+
+// 文件分片上传请求
 const uploadFile = async ctx => {
     ctx.set("Content-Type", "application/json");
     ctx.body = JSON.stringify({
@@ -12,6 +32,7 @@ const uploadFile = async ctx => {
     });
 }
 
+// 分片文件合并请求
 const mergeChunk = async ctx => {
     const {filename,size} = ctx.request.body
     await mergeFileChunk(path.join(outputPath+'/'+filename,'_'+filename),filename,size)
@@ -28,6 +49,7 @@ const mergeChunk = async ctx => {
     });
 }
 
+// 处理合并过程
 const mergeFileChunk = async (filePath,filename,size) => {
     const chunksPath = path.join(outputPath,filename)
     const chunkPaths = fs.readdirSync(chunksPath);
@@ -44,7 +66,6 @@ const mergeFileChunk = async (filePath,filename,size) => {
             }))
         })
     )
-
 }
 
 // 通过管道处理流
@@ -60,6 +81,7 @@ const pipeStream = (path, writeStream) => {
 }
 
 module.exports = {
+    verifyFile,
     uploadFile,
     mergeChunk,
 }
