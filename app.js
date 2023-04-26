@@ -30,7 +30,7 @@ app.use(cors({
 
 app.use(router.allowedMethods());
 
-app.use(koaBody())  // 解析post请求体data
+app.use(koaBody({}))  // 解析post请求体data
 app.use(router.routes()) // 路由转发
 app.use(staticFiles(path.resolve(__dirname, "./public")))  // 使用public
 
